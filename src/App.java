@@ -9,7 +9,7 @@ public class App {
     private static final String caminhoUsuario = "usuario.txt";
 
     // Método para carregar os dados de um arquivo em um ArrayList
-    public static void carregarDadosUsuario(String caminho, ArrayList<String> arraylist) {
+    public static void carregarDadosString(String caminho, ArrayList<String> arraylist) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(caminho));
             String adicionarAoArrayList = br.readLine();
@@ -31,7 +31,7 @@ public class App {
     // Método para escrever os dados em um arquivo.
     // caminho = caminho do arquivo
     // arrayList = lista que voce quer escrever
-    public static void escreverDadosUsuario(String caminho, ArrayList<String> arrayList) {
+    public static void escreverDadosString(String caminho, ArrayList<String> arrayList) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(caminho));
             for (Object object : arrayList) {
@@ -45,7 +45,7 @@ public class App {
 
     // Método para verificar se um elemento existe dentro do arrayList
     // Se o retorno for -1 o elemento não existe dentro do arrayList
-    public static int verificarArrayListUsuario(String dado, ArrayList<String> arrayList) {
+    public static int verificarArrayListString(String dado, ArrayList<String> arrayList) {
         for (int i = 0; i < arrayList.size(); i++) {
             if (arrayList.get(i).equalsIgnoreCase(dado)) {
                 return i;
@@ -55,7 +55,7 @@ public class App {
     }
 
     // Printa todo o arrayList
-    public static void printarUsuario(ArrayList<String> arrayList) {
+    public static void printarString(ArrayList<String> arrayList) {
         for (int i = 0; i < arrayList.size(); i++) {
             System.out.println((i + 1) + " - " + arrayList.get(i));
         }
@@ -66,7 +66,7 @@ public class App {
         String usuario = null, receberNome;
         int escolha = -1, escolhaUsuario;
         ArrayList<String> listaUsuario = new ArrayList<>();
-        carregarDadosUsuario(caminhoUsuario, listaUsuario);
+        carregarDadosString(caminhoUsuario, listaUsuario);
         while (usuario == null) {
             try {
                 System.out.println("1 - Escolher usuário.\n2 - Cadastrar usuário.\n3 - Remover usuário.\n0 - Sair.");
@@ -78,7 +78,7 @@ public class App {
                             System.out.println("Escolha um usuário:");
                             while (true) {
                                 System.out.println("0 - Voltar");
-                                printarUsuario(listaUsuario);
+                                printarString(listaUsuario);
                                 try {
                                     escolhaUsuario = scanner.nextInt();
                                     scanner.nextLine();
@@ -107,9 +107,9 @@ public class App {
                     case 2:
                         System.out.println("Informe o seu nome: ");
                         receberNome = scanner.nextLine();
-                        if (verificarArrayListUsuario(receberNome, listaUsuario) == -1) {
+                        if (verificarArrayListString(receberNome, listaUsuario) == -1) {
                             listaUsuario.add(receberNome);
-                            escreverDadosUsuario(caminhoUsuario, listaUsuario);
+                            escreverDadosString(caminhoUsuario, listaUsuario);
                             System.out.println("\nUsuário adicionado com sucesso.\n");
                         } else {
                             System.out.println("Esse usuário já existe.");
@@ -120,7 +120,7 @@ public class App {
                         if (!listaUsuario.isEmpty()) {
                             try {
                                 System.out.println("Selecione o usuário que voce deseja remover: \n0 - Voltar");
-                                printarUsuario(listaUsuario);
+                                printarString(listaUsuario);
                                 escolhaUsuario = scanner.nextInt();
                                 if (escolhaUsuario == 0) {
                                     break;
@@ -129,7 +129,7 @@ public class App {
                                     System.out.println("Usuário não existe.");
                                 } else {
                                     listaUsuario.remove(escolhaUsuario - 1);
-                                    escreverDadosUsuario(caminhoUsuario, listaUsuario);
+                                    escreverDadosString(caminhoUsuario, listaUsuario);
                                     System.out.println("\nUsuário removido com sucesso.\n");
                                 }
                             } catch (Exception e) {
