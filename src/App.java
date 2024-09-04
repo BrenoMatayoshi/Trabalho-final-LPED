@@ -9,23 +9,24 @@ public class App {
     private static final String caminhoUsuario = "usuario.txt";
 
     // Método para carregar os dados de um arquivo em um ArrayList
-    public static void carregarDadosString(String caminho, ArrayList<String> arraylist) {
+    public static ArrayList<String> carregarDadosString(String caminho) {
+        ArrayList<String> arrayList = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(caminho));
             String adicionarAoArrayList = br.readLine();
             while (true) {
                 if (adicionarAoArrayList != null) {
-                    arraylist.add(adicionarAoArrayList);
+                    arrayList.add(adicionarAoArrayList);
                 } else {
                     br.close();
                     break;
                 }
                 adicionarAoArrayList = br.readLine();
             }
-
         } catch (Exception e) {
             System.out.println(e);
         }
+        return arrayList;
     }
 
     // Método para escrever os dados em um arquivo.
@@ -65,8 +66,7 @@ public class App {
     public static String escolherUsuario(Scanner scanner) {
         String usuario = null, receberNome;
         int escolha = -1, escolhaUsuario;
-        ArrayList<String> listaUsuario = new ArrayList<>();
-        carregarDadosString(caminhoUsuario, listaUsuario);
+        ArrayList<String> listaUsuario = carregarDadosString(caminhoUsuario);
         while (usuario == null) {
             try {
                 System.out.println("1 - Escolher usuário.\n2 - Cadastrar usuário.\n3 - Remover usuário.\n0 - Sair.");
@@ -180,11 +180,12 @@ public class App {
         }
         while (escolha != 0) {
             try {
-                System.out.println("O que você deseja fazer?\n1 - Add\n2 - Remover\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
+                System.out.println("O que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Remover\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
                 escolha = scanner.nextInt();
                 scanner.nextLine();
                 switch (escolha) {
                     case 1:
+                        System.out.println("Insira o nome do item.");
 
                         break;
 
