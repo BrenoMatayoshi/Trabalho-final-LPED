@@ -246,7 +246,7 @@ public class App {
                                     listaQuantidadeItem.add(quantidadeItem);
                                     escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
                                     LocalDateTime dataHoraAtual = LocalDateTime.now();
-                                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy as HH:mm:ss");
+                                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                                     String dataHoraFormatada = dataHoraAtual.format(formato);
                                     listaDataItem.add(dataHoraFormatada);
                                     escreverDadosString(caminhoDataItem, listaDataItem);
