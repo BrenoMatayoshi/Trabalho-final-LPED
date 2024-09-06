@@ -4,11 +4,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class App {
     private static final String caminhoUsuario = "usuario.txt";
+    private static final String caminhoNomeItem = "nomeItem.txt";
+    private static final String caminhoQuantidadeItem = "quantidadeItem.txt";
+    private static final String caminhoDataItem = "dataItem.txt";
+    private static final String caminhoUsuarioItem = "nomeNoItem.txt";
 
-    // Método para carregar os dados de um arquivo em um ArrayList
+    // Método para carregar os dados de um arquivo em um ArrayList tipo String
     public static ArrayList<String> carregarDadosString(String caminho) {
         ArrayList<String> arrayList = new ArrayList<>();
         try {
@@ -29,6 +35,27 @@ public class App {
         return arrayList;
     }
 
+    // Método para carregar os dados de um arquivo em um ArrayList tipo Int
+    public static ArrayList<Integer> carregarDadosInteger(String caminho) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(caminho));
+            String adicionarAoArrayList = br.readLine();
+            while (true) {
+                if (adicionarAoArrayList != null) {
+                    arrayList.add(Integer.parseInt(adicionarAoArrayList));
+                } else {
+                    br.close();
+                    break;
+                }
+                adicionarAoArrayList = br.readLine();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return arrayList;
+    }
+
     // Método para escrever os dados em um arquivo.
     // caminho = caminho do arquivo
     // arrayList = lista que voce quer escrever
@@ -37,6 +64,22 @@ public class App {
             BufferedWriter bw = new BufferedWriter(new FileWriter(caminho));
             for (Object object : arrayList) {
                 bw.append(object + "\n");
+            }
+            bw.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    // Método para escrever os dados em um arquivo.
+    // caminho = caminho do arquivo
+    // arrayList = lista que voce quer escrever
+    public static void escreverDadosInteger(String caminho, ArrayList<Integer> arrayList) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(caminho));
+
+            for (Object object : arrayList) {
+                bw.append(object.toString() + "\n");
             }
             bw.close();
         } catch (Exception e) {
@@ -172,21 +215,51 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-        int escolha = -1;
+        int escolha = -1, quantidadeItem = -1;
         Scanner scanner = new Scanner(System.in);
         String usuario = escolherUsuario(scanner);
+        ArrayList<String> listaNomeItem = carregarDadosString(caminhoNomeItem);
+        ArrayList<String> listaDataItem = carregarDadosString(caminhoDataItem);
+        ArrayList<String> listaUsuarioItem = carregarDadosString(caminhoUsuarioItem);
+        ArrayList<Integer> listaQuantidadeItem = carregarDadosInteger(caminhoQuantidadeItem);
         if (usuario.equals(".")) {
             escolha = 0;
         }
         while (escolha != 0) {
             try {
-                System.out.println("O que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Remover\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
+                System.out.println(
+                        "O que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Remover\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
                 escolha = scanner.nextInt();
                 scanner.nextLine();
                 switch (escolha) {
                     case 1:
-                        System.out.println("Insira o nome do item.");
-
+                        System.out.println("Insira o nome do item:");
+                        String receberNomeItem = scanner.nextLine();
+                        if (verificarArrayListString(receberNomeItem, listaNomeItem) == -1) {
+                            while (quantidadeItem == -1) {
+                                try {
+                                    System.out.println("Insira a quantidade:");
+                                    quantidadeItem = scanner.nextInt();
+                                    scanner.nextLine();
+                                    listaNomeItem.add(receberNomeItem);
+                                    escreverDadosString(caminhoNomeItem, listaNomeItem);
+                                    listaQuantidadeItem.add(quantidadeItem);
+                                    escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
+                                    LocalDateTime dataHoraAtual = LocalDateTime.now();
+                                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy as HH:mm:ss");
+                                    String dataHoraFormatada = dataHoraAtual.format(formato);
+                                    listaDataItem.add(dataHoraFormatada);
+                                    escreverDadosString(caminhoDataItem, listaDataItem);
+                                    listaUsuarioItem.add(usuario);
+                                    escreverDadosString(caminhoUsuarioItem, listaUsuarioItem);
+                                } catch (Exception e) {
+                                    scanner.nextLine();
+                                    quantidadeItem = -1;
+                                }
+                            }
+                        } else {
+                            System.out.println("O item já existe.");
+                        }
                         break;
 
                     case 2:
