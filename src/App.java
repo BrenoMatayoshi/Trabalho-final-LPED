@@ -11,8 +11,11 @@ public class App {
     private static final String caminhoUsuario = "usuario.txt";
     private static final String caminhoNomeItem = "nomeItem.txt";
     private static final String caminhoQuantidadeItem = "quantidadeItem.txt";
-    private static final String caminhoDataItem = "dataItem.txt";
-    private static final String caminhoUsuarioItem = "nomeNoItem.txt";
+
+    private static final String caminhoHistoricoDataItem = "historicoDataItem.txt";
+    private static final String caminhoHistoricoNomeItem = "historicoNomeItem.txt";
+    private static final String caminhoHistoricoNomeNoItem = "historicoNomeNoItem.txt";
+    private static final String caminhoHistoricoQuantidadeItem = "historicoQuantidadeItem.txt";
 
     // Método para carregar os dados de um arquivo em um ArrayList tipo String
     public static ArrayList<String> carregarDadosString(String caminho) {
@@ -215,20 +218,24 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-        int escolha = -1, quantidadeItem = -1;
+        int escolha = -1, quantidadeItem = -1, confirmar;
+        String pesquisar;
         Scanner scanner = new Scanner(System.in);
         String usuario = escolherUsuario(scanner);
         ArrayList<String> listaNomeItem = carregarDadosString(caminhoNomeItem);
-        ArrayList<String> listaDataItem = carregarDadosString(caminhoDataItem);
-        ArrayList<String> listaUsuarioItem = carregarDadosString(caminhoUsuarioItem);
         ArrayList<Integer> listaQuantidadeItem = carregarDadosInteger(caminhoQuantidadeItem);
+
+        ArrayList<String> listaHistoricoNomeItem = carregarDadosString(caminhoHistoricoNomeItem);
+        ArrayList<String> listaHistoricoDataItem = carregarDadosString(caminhoHistoricoDataItem);
+        ArrayList<String> listaHistoricoUsuarioItem = carregarDadosString(caminhoHistoricoNomeNoItem);
+        ArrayList<Integer> listaHistoricoQuantidadeItem = carregarDadosInteger(caminhoHistoricoQuantidadeItem);
         if (usuario.equals(".")) {
             escolha = 0;
         }
         while (escolha != 0) {
             try {
                 System.out.println(
-                        "O que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Remover\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
+                        "O que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Excluir item do estoque.\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
                 escolha = scanner.nextInt();
                 scanner.nextLine();
                 switch (escolha) {
@@ -248,10 +255,14 @@ public class App {
                                     LocalDateTime dataHoraAtual = LocalDateTime.now();
                                     DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                                     String dataHoraFormatada = dataHoraAtual.format(formato);
-                                    listaDataItem.add(dataHoraFormatada);
-                                    escreverDadosString(caminhoDataItem, listaDataItem);
-                                    listaUsuarioItem.add(usuario);
-                                    escreverDadosString(caminhoUsuarioItem, listaUsuarioItem);
+                                    listaHistoricoDataItem.add(dataHoraFormatada);
+                                    escreverDadosString(caminhoHistoricoDataItem, listaHistoricoDataItem);
+                                    listaHistoricoUsuarioItem.add(usuario);
+                                    escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
+                                    listaHistoricoNomeItem.add(receberNomeItem);
+                                    escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
+                                    listaHistoricoQuantidadeItem.add(quantidadeItem);
+                                    escreverDadosInteger(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
                                 } catch (Exception e) {
                                     scanner.nextLine();
                                     quantidadeItem = -1;
@@ -263,7 +274,31 @@ public class App {
                         break;
 
                     case 2:
-
+                        if (listaNomeItem.size() != 0) {
+                            printarString(listaNomeItem);
+                            System.out.println("Escolha o item que você deseja excluir.");
+                            pesquisar = listaNomeItem.get(quantidadeItem - 1);
+                            int index = verificarArrayListString(pesquisar, listaNomeItem);
+                            if (index != -1) {
+                                System.out.println("Confirmar?\n1 - Sim.\n2 - Não.");
+                                try {
+                                    confirmar = scanner.nextInt();
+                                    scanner.nextLine();
+                                    if (confirmar == 1) {
+                                        listaNomeItem.remove(index);
+                                        listaQuantidadeItem.remove(index);
+                                        System.out.println("\nItem removido com sucesso.\n");
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                    scanner.nextLine();
+                                }
+                            } else {
+                                System.out.println("Item não encontrado.");
+                            }
+                        } else {
+                            System.out.println("Estoque vazio.");
+                        }
                         break;
 
                     case 3:
