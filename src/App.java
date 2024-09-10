@@ -16,7 +16,6 @@ public class App {
     private static final String caminhoHistoricoNomeItem = "historicoNomeItem.txt";
     private static final String caminhoHistoricoNomeNoItem = "historicoNomeNoItem.txt";
     private static final String caminhoHistoricoQuantidadeItem = "historicoQuantidadeItem.txt";
-    private static final String caminhoHistoricoColocouTirou = "historicoColocouTirou.txt";
 
     // Método para carregar os dados de um arquivo em um ArrayList tipo String
     public static ArrayList<String> carregarDadosString(String caminho) {
@@ -66,8 +65,8 @@ public class App {
     public static void escreverDadosString(String caminho, ArrayList<String> arrayList) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(caminho));
-            for (Object object : arrayList) {
-                bw.append(object + "\n");
+            for (String string : arrayList) {
+                bw.append(string + "\n");
             }
             bw.close();
         } catch (Exception e) {
@@ -82,8 +81,8 @@ public class App {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(caminho));
 
-            for (Object object : arrayList) {
-                bw.append(object.toString() + "\n");
+            for (Integer integer : arrayList) {
+                bw.append(integer.toString() + "\n");
             }
             bw.close();
         } catch (Exception e) {
@@ -102,13 +101,6 @@ public class App {
         return -1;
     }
 
-    // Printa todo o arrayList
-    public static void printarString(ArrayList<String> arrayList) {
-        for (int i = 0; i < arrayList.size(); i++) {
-            System.out.println((i + 1) + " - " + arrayList.get(i));
-        }
-    }
-
     // Método para selecionar/cadastrar/remover usuario
     public static String escolherUsuario(Scanner scanner) {
         String usuario = null, receberNome;
@@ -125,7 +117,9 @@ public class App {
                             System.out.println("Escolha um usuário:");
                             while (true) {
                                 System.out.println("0 - Voltar");
-                                printarString(listaUsuario);
+                                for (int i = 0; i < listaUsuario.size(); i++) {
+                                    System.out.println(i + 1 + " - " + listaUsuario.get(i));
+                                }
                                 try {
                                     escolhaUsuario = scanner.nextInt();
                                     scanner.nextLine();
@@ -167,7 +161,9 @@ public class App {
                         if (!listaUsuario.isEmpty()) {
                             try {
                                 System.out.println("Selecione o usuário que voce deseja remover: \n0 - Voltar");
-                                printarString(listaUsuario);
+                                for (int i = 0; i < listaUsuario.size(); i++) {
+                                    System.out.println(i + 1 + " - " + listaUsuario.get(i));
+                                }
                                 escolhaUsuario = scanner.nextInt();
                                 if (escolhaUsuario == 0) {
                                     break;
@@ -219,7 +215,7 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-        int escolha = -1, quantidadeItem = -1, confirmar, escolherItem;
+        int escolha = -1, quantidadeItem = -1, confirmar = 0, opcao = -1;
         String pesquisar;
         Scanner scanner = new Scanner(System.in);
         String usuario = escolherUsuario(scanner);
@@ -229,15 +225,13 @@ public class App {
         ArrayList<String> listaHistoricoNomeItem = carregarDadosString(caminhoHistoricoNomeItem);
         ArrayList<String> listaHistoricoDataItem = carregarDadosString(caminhoHistoricoDataItem);
         ArrayList<String> listaHistoricoUsuarioItem = carregarDadosString(caminhoHistoricoNomeNoItem);
-        ArrayList<String> listaHistoricoColocouTirou = carregarDadosString(caminhoHistoricoColocouTirou);
-        ArrayList<Integer> listaHistoricoQuantidadeItem = carregarDadosInteger(caminhoHistoricoQuantidadeItem);
+        ArrayList<String> listaHistoricoQuantidadeItem = carregarDadosString(caminhoHistoricoQuantidadeItem);
         if (usuario.equals(".")) {
             escolha = 0;
         }
         while (escolha != 0) {
             try {
-                System.out.println(
-                        "O que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Excluir item do estoque.\n3 - Trocar\n4 - Listar\n5 - Procurar\n6 - Exibir historico\n0 - Encerrar Programa.");
+                System.out.println("\nO que você deseja fazer?\n1 - Adicionar item ao estoque.\n2 - Excluir item do estoque.\n3 - Lançar entrada/saida.\n4 - Exibir todos os itens.\n5 - Procurar.\n6 - Exibir historico.\n7 - Resetar sistema.\n0 - Encerrar Programa.");
                 escolha = scanner.nextInt();
                 scanner.nextLine();
                 switch (escolha) {
@@ -245,6 +239,7 @@ public class App {
                         System.out.println("Insira o nome do item:");
                         String receberNomeItem = scanner.nextLine();
                         if (verificarArrayListString(receberNomeItem, listaNomeItem) == -1) {
+                            quantidadeItem = -1;
                             while (quantidadeItem == -1) {
                                 try {
                                     System.out.println("Insira a quantidade:");
@@ -255,18 +250,18 @@ public class App {
                                     listaQuantidadeItem.add(quantidadeItem);
                                     escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
                                     LocalDateTime dataHoraAtual = LocalDateTime.now();
-                                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                                    String dataHoraFormatada = dataHoraAtual.format(formato);
-                                    listaHistoricoDataItem.add(dataHoraFormatada);
+                                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy . HH:mm:ss");
+                                    String DataHora = dataHoraAtual.format(formato);
+                                    String[] dataHoraFormatada = DataHora.split("\\.");
+                                    listaHistoricoDataItem.add(dataHoraFormatada[0] + "as" + dataHoraFormatada[1]);
                                     escreverDadosString(caminhoHistoricoDataItem, listaHistoricoDataItem);
                                     listaHistoricoUsuarioItem.add(usuario);
                                     escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
                                     listaHistoricoNomeItem.add(receberNomeItem);
                                     escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
-                                    listaHistoricoQuantidadeItem.add(quantidadeItem);
-                                    escreverDadosInteger(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
-                                    listaHistoricoColocouTirou.add("True");
-                                    escreverDadosString(caminhoHistoricoColocouTirou, listaHistoricoColocouTirou);
+                                    listaHistoricoQuantidadeItem.add(Integer.toString(quantidadeItem));
+                                    escreverDadosString(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
+                                    System.out.println("\nItem adicionado com sucesso.");
                                 } catch (Exception e) {
                                     scanner.nextLine();
                                     quantidadeItem = -1;
@@ -279,37 +274,36 @@ public class App {
 
                     case 2:
                         if (listaNomeItem.size() != 0) {
-                            printarString(listaNomeItem);
                             System.out.println("Escolha o item que você deseja excluir.");
+                            for (int i = 0; i < listaNomeItem.size(); i++) {
+                                System.out.println(i + 1 + " - " + listaNomeItem.get(i));
+                            }
                             try {
-                                escolherItem = scanner.nextInt();
+                                int index = scanner.nextInt();
                                 scanner.nextLine();
-                                pesquisar = listaNomeItem.get(escolherItem - 1);
-                                int index = verificarArrayListString(pesquisar, listaNomeItem);
-                                if (index != -1) {
+                                if (index > 0 && index < listaNomeItem.size() + 1) {
                                     System.out.println("Confirmar?\n1 - Sim.\n2 - Não.");
                                     try {
                                         confirmar = scanner.nextInt();
                                         scanner.nextLine();
                                         if (confirmar == 1) {
                                             LocalDateTime dataHoraAtual = LocalDateTime.now();
-                                            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                                            String dataHoraFormatada = dataHoraAtual.format(formato);
-                                            listaHistoricoDataItem.add(dataHoraFormatada);
+                                            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy . HH:mm:ss");
+                                            String DataHora = dataHoraAtual.format(formato);
+                                            String[] dataHoraFormatada = DataHora.split("\\.");
+                                            listaHistoricoDataItem.add(dataHoraFormatada[0] + "as" + dataHoraFormatada[1]);
                                             escreverDadosString(caminhoHistoricoDataItem, listaHistoricoDataItem);
-                                            listaHistoricoColocouTirou.add("False");
-                                            escreverDadosString(caminhoHistoricoColocouTirou, listaHistoricoColocouTirou);
                                             listaHistoricoUsuarioItem.add(usuario);
                                             escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
-                                            listaHistoricoQuantidadeItem.add(-1);
-                                            escreverDadosInteger(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
-                                            listaHistoricoNomeItem.add(listaNomeItem.get(index));
+                                            listaHistoricoQuantidadeItem.add("-1");
+                                            escreverDadosString(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
+                                            listaHistoricoNomeItem.add(listaNomeItem.get(index - 1));
                                             escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
-                                            listaNomeItem.remove(index);
-                                            listaQuantidadeItem.remove(index);
+                                            listaNomeItem.remove(index - 1);
+                                            listaQuantidadeItem.remove(index - 1);
                                             escreverDadosString(caminhoNomeItem, listaNomeItem);
                                             escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
-                                            System.out.println("\nItem removido com sucesso.\n");
+                                            System.out.println("\nItem removido com sucesso.");
                                         }
                                     } catch (Exception e) {
                                         System.out.println(e);
@@ -323,24 +317,253 @@ public class App {
                                 scanner.nextLine();
                             }
                         } else {
-                            System.out.println("Estoque vazio.");
+                            System.out.println("\nEstoque vazio.");
                         }
                         break;
 
                     case 3:
+                        if (listaNomeItem.isEmpty()) {
+                            System.out.println("\nO estoque está vazio.");
+                        } else {
+                        System.out.println("1 - Entrada.\n2 - Saida.");
+                        try {
+                            opcao = scanner.nextInt();
+                            scanner.nextLine();
+                            switch (opcao) {
+                                case 1:
+                                    System.out.println("Escolha um item:");
+                                    for (int i = 0; i < listaNomeItem.size(); i++) {
+                                        System.out.println(i + 1 + " - " + listaNomeItem.get(i));
+                                    }
+                                    try {
+                                        int index = scanner.nextInt();
+                                        scanner.nextLine();
+                                        if (index > 0 && index < listaNomeItem.size() + 1) {
+                                            System.out.println("Nome do item: " + listaNomeItem.get(index - 1) + "\nQuantidade: " + listaQuantidadeItem.get(index - 1));
+                                            System.out.println("Informe a quantidade a ser adicionada.");
+                                            try {
+                                                int quantidadeAddRem = scanner.nextInt();
+                                                scanner.nextLine();
+                                                if (quantidadeAddRem > 0) {
+                                                    int quantidadeAntesDaAlteracao = listaQuantidadeItem.get(index - 1);
+                                                    listaQuantidadeItem.set(index - 1, listaQuantidadeItem.get(index - 1) + quantidadeAddRem);
+                                                    escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
+                                                    listaHistoricoUsuarioItem.add(usuario);
+                                                    listaHistoricoQuantidadeItem.add("Antes: " + Integer.toString(quantidadeAntesDaAlteracao) + "," + " Entrou: " + quantidadeAddRem + ", " + "Atual:" + Integer.toString(listaQuantidadeItem.get(index - 1)));
+                                                    escreverDadosString(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
+                                                    escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
+                                                    LocalDateTime dataHoraAtual = LocalDateTime.now();
+                                                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy . HH:mm:ss");
+                                                    String DataHora = dataHoraAtual.format(formato);
+                                                    String[] dataHoraFormatada = DataHora.split("\\.");
+                                                    listaHistoricoDataItem.add(dataHoraFormatada[0] + "as" + dataHoraFormatada[1]);
+                                                    escreverDadosString(caminhoHistoricoDataItem,listaHistoricoDataItem);
+                                                    listaHistoricoNomeItem.add(listaNomeItem.get(index - 1));
+                                                    escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
+                                                    System.out.println("Entrada feita com sucesso.");
+                                                } else {
+                                                    System.out.println("Quantidade invalida.");
+                                                }
+                                            } catch (Exception e) {
+                                                scanner.nextLine();
+                                            }
+                                        } else {
+                                            System.out.println("Item não encontrado.");
+                                        }
+                                    } catch (Exception e) {
+                                        scanner.nextLine();
+                                        System.out.println("Opção invalida.");
+                                    }
+                                    break;
+
+                                case 2:
+                                System.out.println("Escolha um item:");
+                                for (int i = 0; i < listaNomeItem.size(); i++) {
+                                    System.out.println(i + 1 + " - " + listaNomeItem.get(i));
+                                }
+                                try {
+                                    int index = scanner.nextInt();
+                                    scanner.nextLine();
+                                    if (index > 0 && index < listaNomeItem.size() + 1) {
+                                        System.out.println("Nome do item: " + listaNomeItem.get(index - 1) + "\nQuantidade: " + listaQuantidadeItem.get(index - 1));
+                                        System.out.println("Informe a quantidade a ser adicionada.");
+                                        try {
+                                            int quantidadeAddRem = scanner.nextInt();
+                                            scanner.nextLine();
+                                            if (quantidadeAddRem > 0 && quantidadeAddRem <= listaQuantidadeItem.get(index-1)) {
+                                                int quantidadeAntesDaAlteracao = listaQuantidadeItem.get(index - 1);
+                                                listaQuantidadeItem.set(index - 1, listaQuantidadeItem.get(index - 1) - quantidadeAddRem);
+                                                escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
+                                                listaHistoricoUsuarioItem.add(usuario);
+                                                listaHistoricoQuantidadeItem.add("Antes: " + Integer.toString(quantidadeAntesDaAlteracao) + "," + " Saiu: " + quantidadeAddRem + ", " + "Atual:" + Integer.toString(listaQuantidadeItem.get(index - 1)));
+                                                escreverDadosString(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);
+                                                escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
+                                                LocalDateTime dataHoraAtual = LocalDateTime.now();
+                                                DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy . HH:mm:ss");
+                                                String DataHora = dataHoraAtual.format(formato);
+                                                String[] dataHoraFormatada = DataHora.split("\\.");
+                                                listaHistoricoDataItem.add(dataHoraFormatada[0] + "as" + dataHoraFormatada[1]);
+                                                escreverDadosString(caminhoHistoricoDataItem,listaHistoricoDataItem);
+                                                listaHistoricoNomeItem.add(listaNomeItem.get(index - 1));
+                                                escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
+                                                System.out.println("Saida feita com sucesso.");
+                                            } else {
+                                                System.out.println("Quantidade invalida.");
+                                            }
+                                        } catch (Exception e) {
+                                            scanner.nextLine();
+                                        }
+                                    } else {
+                                        System.out.println("Item não encontrado.");
+                                    }
+                                } catch (Exception e) {
+                                    scanner.nextLine();
+                                    System.out.println("Opção invalida.");
+                                }
+                                    break;
+
+                                default:
+                                    System.out.println("Opção invalida.");
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            scanner.nextLine();
+                            System.out.println("Opção invalida.");
+                        }
+                    }
 
                         break;
 
                     case 4:
-
+                        if (!listaNomeItem.isEmpty()) {
+                            for (int i = 0; i < listaNomeItem.size(); i++) {System.out.println("\nNome do item: " + listaNomeItem.get(i) + "\nQuantidade: " + listaQuantidadeItem.get(i));
+                            }
+                        } else {
+                            System.out.println("\no estoque está vazio.");
+                        }
                         break;
 
                     case 5:
-
+                        if (listaNomeItem.isEmpty()) {
+                            System.out.println("\nO estoque está vazio.");
+                        } else {
+                            System.out.println("Escolha um item para obter suas informações: ");
+                            for (int i = 0; i < listaNomeItem.size(); i++) {
+                                System.out.println(i+1 + " - " + listaNomeItem.get(i));
+                            }
+                            try {
+                                opcao = scanner.nextInt();
+                                scanner.nextLine();
+                                if (opcao > 0 && opcao < listaNomeItem.size()+1) {
+                                    System.out.println("\nNome do item: " + listaNomeItem.get(opcao - 1) + ".\nQuantidade: " + listaQuantidadeItem.get(opcao - 1) + ".");
+                                } else {
+                                    System.out.println("Opção invalida.");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Item não encontrado.");    
+                                scanner.nextLine();
+                            }
+                        }
                         break;
 
                     case 6:
+                        if (listaHistoricoNomeItem.isEmpty()) {
+                            System.out.println("\nO histórico está vazio.");
+                        } else {
+                            for (int i = 0; i < listaHistoricoNomeItem.size(); i++) {
+                                System.out.println("\nNome do item: " + listaHistoricoNomeItem.get(i)
+                                        + (listaHistoricoQuantidadeItem.get(i).equals("-1") ? "\nItem excluido do estoque." : "\nQuantidade: " + listaHistoricoQuantidadeItem.get(i)) + "\nPor: " + listaHistoricoUsuarioItem.get(i) + "\nData: " + listaHistoricoDataItem.get(i));
+                            }
+                        }
+                        break;
+                    
+                    case 7:
+                    opcao = -1;
+                    while (opcao != 0) {
+                        System.out.println("Escolha o que você deseja resetar: \n0 - Sair.\n1 - Apenas estoque.\n2 - Apenas histórico.\n3 - Tudo.");
+                        try {
+                            opcao = scanner.nextInt();
+                            scanner.nextLine();
+                            switch (opcao) {
+                                case 1:
+                                    System.out.println("Todo o estoque será apagado. Conmfirmar?\n1 - Sim.\n2 - Não.");
+                                    try {
+                                        confirmar = scanner.nextInt();
+                                        scanner.nextLine();
+                                        if (confirmar == 1) {
+                                            listaNomeItem.clear();
+                                            escreverDadosString(caminhoNomeItem, listaNomeItem);
+                                            listaQuantidadeItem.clear();
+                                            escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
+                                        }
+                                        opcao = 0;
+                                    } catch (Exception e) {
+                                        scanner.nextLine();
+                                        System.out.println("Opção invalida.");
+                                    }
+                                    break;
+                            
+                                case 2:
+                                System.out.println("Todo o histórico será apagado. Conmfirmar?\n1 - Sim.\n2 - Não.");
+                                try {
+                                    confirmar = scanner.nextInt();
+                                    scanner.nextLine();
+                                    if (confirmar == 1) {
+                                        listaHistoricoDataItem.clear();
+                                        escreverDadosString(caminhoHistoricoDataItem, listaHistoricoQuantidadeItem);
+                                        listaHistoricoNomeItem.clear();
+                                        escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
+                                        listaHistoricoQuantidadeItem.clear();
+                                        escreverDadosString(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);  
+                                        listaHistoricoUsuarioItem.clear();
+                                        escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
+                                    }
+                                    opcao = 0;
+                                } catch (Exception e) {
+                                    scanner.nextLine();
+                                    System.out.println("Opção invalida.");
+                                }
+                                    break;
+                            
+                                case 3:
+                                System.out.println("Tudo será apagado. Conmfirmar?\n1 - Sim.\n2 - Não.");
+                                try {
+                                    confirmar = scanner.nextInt();
+                                    scanner.nextLine();
+                                    if (confirmar == 1) {
+                                        listaNomeItem.clear();
+                                        escreverDadosString(caminhoNomeItem, listaNomeItem);
+                                        listaQuantidadeItem.clear();
+                                        escreverDadosInteger(caminhoQuantidadeItem, listaQuantidadeItem);
+                                        listaHistoricoDataItem.clear();
+                                        escreverDadosString(caminhoHistoricoDataItem, listaHistoricoQuantidadeItem);
+                                        listaHistoricoNomeItem.clear();
+                                        escreverDadosString(caminhoHistoricoNomeItem, listaHistoricoNomeItem);
+                                        listaHistoricoQuantidadeItem.clear();
+                                        escreverDadosString(caminhoHistoricoQuantidadeItem, listaHistoricoQuantidadeItem);  
+                                        listaHistoricoUsuarioItem.clear();
+                                        escreverDadosString(caminhoHistoricoNomeNoItem, listaHistoricoUsuarioItem);
+                                        }
+                                        opcao = 0;
+                                    } catch (Exception e) {
+                                        scanner.nextLine();
+                                        System.out.println("Opção invalida.");
+                                    }
+                                    break;
 
+                                case 0:
+                                    opcao = 0;
+                                    break;
+                            
+                                default:
+                                    System.out.println("Opção não encontrada.");
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Opção invalida.");
+                            scanner.nextLine();
+                        }
+                    }
                         break;
 
                     case 0:
